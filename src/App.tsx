@@ -223,6 +223,7 @@ function PlayerCard({
 export default function App() {
   const { players, gameState, winner, addPlayer, removePlayer, startGame, addStrike, undoStrike, resetGame, playAgain } = useGameLogic()
   const [newPlayerName, setNewPlayerName] = useState("")
+  const [showQuitConfirm, setShowQuitConfirm] = useState(false)
 
   // Check viewport height for mobile browser bar issues
   useEffect(() => {
@@ -238,6 +239,15 @@ export default function App() {
     e.preventDefault()
     addPlayer(newPlayerName)
     setNewPlayerName("")
+  }
+
+  const handleQuitRequest = () => {
+    setShowQuitConfirm(true)
+  }
+
+  const confirmQuit = () => {
+    resetGame()
+    setShowQuitConfirm(false)
   }
 
   return (
@@ -325,7 +335,7 @@ export default function App() {
               </span>
             </div>
             <button
-              onClick={resetGame}
+              onClick={handleQuitRequest}
               className="p-2 -mr-2 text-zinc-600 hover:text-white transition-colors"
             >
               <X size={28} />
@@ -349,6 +359,37 @@ export default function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Quit Confirmation Modal */}
+      {showQuitConfirm && (
+        <Modal isOpen={true}>
+          <div className="text-center space-y-6">
+            <div className="inline-block p-4 rounded-full bg-red-900/30 text-red-500 mb-2">
+              <AlertCircle size={40} />
+            </div>
+
+            <div className="space-y-2">
+              <h2 className="text-2xl font-black text-white uppercase">End Game?</h2>
+              <p className="text-zinc-400 text-sm font-medium uppercase">Current progress will be lost.</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <button
+                onClick={() => setShowQuitConfirm(false)}
+                className="py-3 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition-colors text-sm font-bold uppercase tracking-wide text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmQuit}
+                className="py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 transition-colors text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-red-900/20"
+              >
+                End Game
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {/* Game Over View */}
