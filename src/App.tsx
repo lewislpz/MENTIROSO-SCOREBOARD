@@ -188,14 +188,14 @@ function PlayerCard({
       </div>
 
       {/* Letters Display */}
-      <div className="flex justify-center items-end gap-0 mt-auto">
+      <div className="flex justify-center items-end gap-0 mt-10">
         {TARGET_LETTERS.map((char, index) => {
           const isActive = index < player.strikes
           return (
             <div
               key={index}
               className={`
-                 font-mono font-bold text-2xl
+                 font-mono font-bold text-1xl
                  w-5 text-center
                  ${isActive
                   ? "text-red-600 border-b-4 border-red-600"
