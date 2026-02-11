@@ -253,7 +253,7 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen bg-[#008080] text-black select-none overflow-hidden relative font-sans"
+      className="min-h-screen bg-[#008080] text-black select-none overflow-hidden relative font-mono pt-12 sm:pt-0"
       style={{ minHeight: '100dvh' }}
     >
       {/* Background Tiling if wanted, or just teal color */}
