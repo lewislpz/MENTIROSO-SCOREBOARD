@@ -327,7 +327,7 @@ export default function App() {
       {gameState === "playing" && (
         <div className="relative z-10 h-full flex flex-col">
           {/* Header */}
-          <header className="flex justify-between items-center px-6 py-4 border-b border-zinc-800 bg-black/50 backdrop-blur-xl">
+          <header className="flex justify-between items-center px-6 pb-4 pt-14 border-b border-zinc-800 bg-black/50 backdrop-blur-xl">
             <div className="flex items-center gap-2">
               <AlertCircle size={20} className="text-red-500" />
               <span className="text-sm font-bold tracking-widest text-zinc-400 uppercase">
@@ -344,7 +344,7 @@ export default function App() {
 
           {/* Grid */}
           <div className="flex-1 overflow-y-auto p-4 pb-32">
-            <div className={`grid gap-4 ${players.length >= 4 ? 'grid-cols-2' : 'grid-cols-1 max-w-md mx-auto'}`}>
+            <div className={`grid gap-4 ${players.length > 5 ? 'grid-cols-2' : 'grid-cols-1 max-w-md mx-auto'}`}>
               {players.map(player => (
                 <PlayerCard
                   key={player.id}
