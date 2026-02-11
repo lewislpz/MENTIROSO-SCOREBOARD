@@ -162,7 +162,7 @@ function PlayerCard({
     <div
       onClick={isOut ? undefined : onTap}
       className={`
-        relative group border-[3px] p-4 h-40 flex flex-col justify-between cursor-pointer select-none transition-transform active:translate-y-1
+        relative group border-[3px] p-2 h-36 flex flex-col justify-between cursor-pointer select-none transition-transform active:translate-y-1
         ${isOut
           ? "bg-[#808080] border-t-gray-600 border-l-gray-600 border-b-white border-r-white grayscale text-gray-400"
           : "bg-white border-t-white border-l-white border-b-black border-r-black hover:bg-[#eaeaea]"
@@ -171,8 +171,8 @@ function PlayerCard({
       `}
     >
       {/* Header: Name + Undo */}
-      <div className="flex justify-between items-start border-b-2 border-black pb-1 mb-2">
-        <h3 className={`font-bold text-lg leading-none truncate pr-2 ${isOut ? "line-through decoration-2" : "text-black"}`}>
+      <div className="flex justify-between items-start border-b-2 border-black pb-1 mb-1">
+        <h3 className={`font-bold text-lg leading-none truncate pr-1 ${isOut ? "line-through decoration-2" : "text-black"}`}>
           {player.name}
         </h3>
 
@@ -188,7 +188,7 @@ function PlayerCard({
       </div>
 
       {/* Letters Display */}
-      <div className="flex justify-center items-end gap-1 mt-auto">
+      <div className="flex justify-center items-end gap-0 mt-auto">
         {TARGET_LETTERS.map((char, index) => {
           const isActive = index < player.strikes
           return (
@@ -196,7 +196,7 @@ function PlayerCard({
               key={index}
               className={`
                  font-mono font-bold text-2xl
-                 w-6 text-center
+                 w-5 text-center
                  ${isActive
                   ? "text-red-600 border-b-4 border-red-600"
                   : "text-gray-300 border-b-4 border-transparent"
