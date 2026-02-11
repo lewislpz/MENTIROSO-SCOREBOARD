@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#000000"/>
+  <rect x="0" y="0" width="512" height="512" fill="url(#grad)" opacity="0.4"/>
+  <defs>
+    <radialGradient id="grad" cx="50%" cy="0%" r="100%" fx="50%" fy="0%">
+      <stop offset="0%" style="stop-color:#450a0a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Dice Shape Background -->
+  <rect x="106" y="106" width="300" height="300" rx="60" fill="#18181b" stroke="#3f3f46" stroke-width="12"/>
+  
+  <!-- The Letter M -->
+  <path d="M156 356 V 156 L 256 256 L 356 156 V 356" 
+        fill="none" 
+        stroke="#dc2626" 
+        stroke-width="50" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+        
+  <!-- Dice Dots (Red) -->
+  <circle cx="256" cy="350" r="20" fill="#ffffff" />
+</svg>
