@@ -1,25 +1,72 @@
 @import "tailwindcss";
 
 @layer base {
+  body {
+    background-color: #c0c0c0;
+    font-family: "Courier New", Courier, monospace;
+    color: #000;
+  }
 
-  body,
   input,
   button,
   textarea,
   select {
-    @apply uppercase;
+    font-family: inherit;
+    text-transform: uppercase;
   }
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+/* Scrollbar retro */
+::-webkit-scrollbar {
+  width: 16px;
+  background: #c0c0c0;
+  border-left: 1px solid #fff;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+::-webkit-scrollbar-track {
+  background: repeating-linear-gradient(45deg,
+      #c0c0c0,
+      #c0c0c0 2px,
+      #dfdfdf 2px,
+      #dfdfdf 4px);
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #808080 #808080 #fff;
+  box-shadow: 1px 1px 0 #000;
+}
+
+/* Utility for 'outset' look (Windows 95 style buttons/cards) */
+.retro-border {
+  border: 2px solid;
+  border-color: #fff #808080 #808080 #fff;
+  box-shadow: 1px 1px 0 #000;
+}
+
+.retro-border-inset {
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  box-shadow: inset 1px 1px 0 #000;
+}
+
+.retro-text-shadow {
+  text-shadow: 2px 2px 0px #ccc;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
 }

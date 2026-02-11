@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Plus, Trash2, Undo2, Trophy, RotateCcw, AlertCircle, X } from "lucide-react"
+import { AlertCircle, Trophy, X } from "lucide-react"
 
 // --- Types ---
 interface Player {
@@ -126,19 +126,27 @@ function useGameLogic() {
 
 // --- Components ---
 
-// 1. Modal Component
-function Modal({ children, isOpen }: { children: React.ReactNode; isOpen: boolean }) {
+function Modal({ children, isOpen, title = "ALERT" }: { children: React.ReactNode; isOpen: boolean; title?: string }) {
   if (!isOpen) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[#1a1a1c] border border-white/10 rounded-2xl shadow-2xl p-6 w-full max-w-sm relative animate-in zoom-in-95 duration-200">
-        {children}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-grayscale-[50%] p-4">
+      <div className="bg-[#c0c0c0] w-full max-w-sm border-[3px] border-t-white border-l-white border-b-black border-r-black shadow-[4px_4px_0_#000]">
+        <div className="bg-[#000080] px-2 py-1 flex justify-between items-center select-none">
+          <span className="font-bold text-white tracking-wider">{title}</span>
+          <div className="flex gap-1">
+            <button className="bg-[#c0c0c0] w-5 h-5 flex items-center justify-center border border-t-white border-l-white border-b-black border-r-black active:border-t-black active:border-l-black active:border-b-white active:border-r-white">
+              <X size={14} className="text-black" />
+            </button>
+          </div>
+        </div>
+        <div className="p-6 text-center text-black font-medium">
+          {children}
+        </div>
       </div>
     </div>
   )
 }
 
-// 2. Player Card Component
 function PlayerCard({
   player,
   onTap,
@@ -154,52 +162,45 @@ function PlayerCard({
     <div
       onClick={isOut ? undefined : onTap}
       className={`
-        relative overflow-hidden group
-        rounded-xl border-2 transition-all duration-200 touch-manipulation
+        relative group border-[3px] p-4 h-40 flex flex-col justify-between cursor-pointer select-none transition-transform active:translate-y-1
         ${isOut
-          ? "bg-red-950/30 border-red-900/50 opacity-50 grayscale"
-          : "bg-zinc-900/80 border-white/20 active:scale-[0.98] active:border-red-500/50 hover:border-white/40"
+          ? "bg-[#808080] border-t-gray-600 border-l-gray-600 border-b-white border-r-white grayscale text-gray-400"
+          : "bg-white border-t-white border-l-white border-b-black border-r-black hover:bg-[#eaeaea]"
         }
-        h-36 sm:h-44 flex flex-col justify-between p-5
-        backdrop-blur-md select-none cursor-pointer
-        shadow-[0_4px_20px_rgba(0,0,0,0.5)]
+        shadow-[4px_4px_0_#000]
       `}
     >
       {/* Header: Name + Undo */}
-      <div className="flex justify-between items-start">
-        <h3 className={`font-black uppercase tracking-wider text-xl truncate pr-8 ${isOut ? "text-red-700 line-through" : "text-white"}`}>
+      <div className="flex justify-between items-start border-b-2 border-black pb-1 mb-2">
+        <h3 className={`font-bold text-lg leading-none truncate pr-2 ${isOut ? "line-through decoration-2" : "text-black"}`}>
           {player.name}
         </h3>
 
         {player.strikes > 0 && !isOut && (
           <button
             onClick={onUndo}
-            className="absolute top-3 right-3 p-2 bg-white/5 hover:bg-red-500/20 rounded-full text-zinc-500 hover:text-red-400 transition-colors"
-            aria-label="Undo strike"
+            className="px-2 py-0 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black text-black active:border-inset hover:bg-gray-300"
+            title="Undo"
           >
-            <Undo2 size={20} />
+            ←
           </button>
         )}
       </div>
 
       {/* Letters Display */}
-      <div className="flex justify-center items-end gap-[2px] sm:gap-1 mt-auto mb-1">
+      <div className="flex justify-center items-end gap-1 mt-auto">
         {TARGET_LETTERS.map((char, index) => {
           const isActive = index < player.strikes
-          const isJustAdded = index === player.strikes - 1
-
           return (
             <div
               key={index}
               className={`
-                 font-black text-2xl sm:text-3xl
-                 w-7 sm:w-9 text-center leading-none
-                 transition-all duration-200
+                 font-mono font-bold text-2xl
+                 w-6 text-center
                  ${isActive
-                  ? "text-red-600 transform scale-100 filter drop-shadow-[0_0_8px_rgba(220,38,38,0.5)]"
-                  : "text-zinc-800 transform scale-90"
+                  ? "text-red-600 border-b-4 border-red-600"
+                  : "text-gray-300 border-b-4 border-transparent"
                 }
-                 ${isJustAdded ? "scale-125 text-red-500" : ""}
               `}
             >
               {char}
@@ -210,8 +211,8 @@ function PlayerCard({
 
       {/* Visual Indicator for "OUT" */}
       {isOut && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="bg-black/80 backdrop-blur-sm border-4 border-red-600 text-red-600 font-black text-4xl -rotate-12 py-2 px-6 rounded-xl shadow-2xl">
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <div className="bg-red-700 text-white font-bold text-3xl px-4 py-2 border-4 border-white transform -rotate-12 shadow-[4px_4px_0_#000]">
             OUT
           </div>
         </div>
@@ -252,99 +253,110 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen bg-black text-white select-none overflow-hidden relative font-sans"
+      className="min-h-screen bg-[#008080] text-black select-none overflow-hidden relative font-sans"
       style={{ minHeight: '100dvh' }}
     >
-      {/* Background Gradient */}
-      <div className="fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(50,0,0,0.4),rgba(0,0,0,1))]" />
+      {/* Background Tiling if wanted, or just teal color */}
 
       {/* Setup View */}
       {gameState === "setup" && (
-        <div className="relative z-10 flex flex-col h-full items-center p-6 max-w-md mx-auto animate-in fade-in zoom-in-95 duration-300">
-          <div className="flex-1 w-full flex flex-col gap-8 pt-12">
-            <header className="text-center space-y-2">
-              <h1 className="text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,0,0,0.5)]">
-                <span className="text-red-600">MENTIROSO</span>
-              </h1>
-              <p className="text-base text-zinc-500 font-medium tracking-widest uppercase">The Ultimate Dice Game</p>
-            </header>
-
-            {/* Player List */}
-            <div className="flex-1 overflow-y-auto space-y-3 px-1 custom-scrollbar">
-              {players.length === 0 ? (
-                <div className="text-center p-8 border-2 border-dashed border-zinc-800 rounded-2xl text-zinc-700">
-                  <UserPlusIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p className="font-bold">ADD PLAYERS</p>
-                </div>
-              ) : (
-                players.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between p-4 bg-zinc-900 border border-zinc-800 rounded-xl animate-in slide-in-from-bottom-2 shadow-lg">
-                    <span className="font-bold text-xl">{p.name}</span>
-                    <button
-                      onClick={() => removePlayer(p.id)}
-                      className="p-2 text-zinc-600 hover:text-red-500 transition-colors"
-                    >
-                      <Trash2 size={24} />
-                    </button>
-                  </div>
-                ))
-              )}
+        <div className="flex flex-col h-full items-center justify-center p-6 max-w-lg mx-auto">
+          <div className="w-full bg-[#c0c0c0] border-[3px] border-t-white border-l-white border-b-black border-r-black shadow-[8px_8px_0_#000] p-1">
+            {/* Title Bar */}
+            <div className="bg-[#000080] px-2 py-1 mb-4 flex justify-between items-center">
+              <span className="font-bold text-white tracking-widest">MENTIROSO.EXE - SETUP</span>
+              <div className="w-4 h-4 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black"></div>
             </div>
 
-            {/* Input Form */}
-            <form onSubmit={handleAddPlayer} className="w-full relative group">
-              <input
-                type="text"
-                autoFocus
-                value={newPlayerName}
-                onChange={(e) => setNewPlayerName(e.target.value)}
-                placeholder="PLAYER NAME"
-                className="w-full bg-zinc-900 border-2 border-zinc-800 focus:border-red-600 rounded-xl px-4 py-4 pr-16 text-xl font-bold uppercase outline-none transition-all placeholder:text-zinc-700 text-white"
-              />
-              <button
-                type="submit"
-                disabled={!newPlayerName.trim()}
-                className="absolute right-2 top-2 bottom-2 aspect-square bg-red-600 hover:bg-red-500 disabled:opacity-50 disabled:hover:bg-red-600 text-white rounded-lg flex items-center justify-center transition-all shadow-[0_0_10px_rgba(220,38,38,0.4)]"
-              >
-                <Plus size={28} />
-              </button>
-            </form>
-          </div>
+            <div className="p-4 flex flex-col gap-6">
+              <header className="text-center border-b-2 border-black pb-4">
+                <h1 className="text-4xl font-bold tracking-tighter text-black retro-text-shadow mb-2">
+                  MENTIROSO
+                </h1>
+                <p className="text-sm font-bold bg-yellow-200 inline-block px-2 border border-black rotate-1">
+                  THE ULTIMATE DICE GAME
+                </p>
+              </header>
 
-          <div className="w-full pt-6 pb-[env(safe-area-inset-bottom)]">
-            <button
-              onClick={startGame}
-              disabled={players.length < 2}
-              className="w-full bg-white text-black font-black text-2xl py-5 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_30px_rgba(255,255,255,0.1)] active:scale-95 transition-all uppercase tracking-wide hover:bg-gray-200"
-            >
-              START GAME
-            </button>
+              {/* Player List */}
+              <div className="h-64 overflow-y-auto border-2 border-inset border-gray-500 bg-white p-2">
+                {players.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                    <UserPlusIcon className="w-8 h-8 mb-2" />
+                    <p className="font-bold">WAITING FOR PLAYERS...</p>
+                  </div>
+                ) : (
+                  <ul className="space-y-1">
+                    {players.map((p) => (
+                      <li key={p.id} className="flex items-center justify-between px-2 py-1 hover:bg-[#000080] hover:text-white group cursor-default">
+                        <span className="font-mono font-bold text-lg">› {p.name}</span>
+                        <button
+                          onClick={() => removePlayer(p.id)}
+                          className="text-red-600 font-bold group-hover:text-white px-2"
+                        >
+                          [DEL]
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* Input Form */}
+              <form onSubmit={handleAddPlayer} className="flex gap-2">
+                <input
+                  type="text"
+                  autoFocus
+                  value={newPlayerName}
+                  onChange={(e) => setNewPlayerName(e.target.value)}
+                  placeholder="ENTER NAME..."
+                  className="flex-1 bg-white border-2 border-inset border-gray-500 px-2 py-2 text-lg font-mono outline-none focus:bg-yellow-100"
+                />
+                <button
+                  type="submit"
+                  disabled={!newPlayerName.trim()}
+                  className="bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black px-4 active:border-inset disabled:opacity-50 font-bold"
+                >
+                  ADD
+                </button>
+              </form>
+
+              <div className="border-t-2 border-gray-400 pt-4">
+                <button
+                  onClick={startGame}
+                  disabled={players.length < 2}
+                  className="w-full py-3 bg-[#c0c0c0] border-[3px] border-t-white border-l-white border-b-black border-r-black text-black font-black text-xl hover:bg-[#d0d0d0] active:border-t-black active:border-l-black active:border-b-white active:border-r-white disabled:opacity-50 disabled:cursor-not-allowed uppercase"
+                >
+                  START GAME
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
       {/* Game Grid View */}
       {gameState === "playing" && (
-        <div className="relative z-10 h-full flex flex-col">
+        <div className="h-full flex flex-col">
           {/* Header */}
-          <header className="flex justify-between items-center px-6 pb-4 pt-14 border-b border-zinc-800 bg-black/50 backdrop-blur-xl">
-            <div className="flex items-center gap-2">
-              <AlertCircle size={20} className="text-red-500" />
-              <span className="text-sm font-bold tracking-widest text-zinc-400 uppercase">
-                {players.filter(p => p.strikes < 9).length} ALIVE
+          <header className="flex justify-between items-center px-4 py-2 bg-[#c0c0c0] border-b-2 border-white shadow-md z-10 shrink-0">
+            <div className="flex items-center gap-2 border-2 border-inset border-gray-500 bg-white px-2 py-1">
+              <span className="font-bold text-red-600 blink">●</span>
+              <span className="text-sm font-mono font-bold uppercase">
+                PLAYERS: {players.filter(p => p.strikes < 9).length}
               </span>
             </div>
             <button
               onClick={handleQuitRequest}
-              className="p-2 -mr-2 text-zinc-600 hover:text-white transition-colors"
+              className="bg-[#c0c0c0] px-3 py-1 border-2 border-t-white border-l-white border-b-black border-r-black active:border-inset font-bold text-sm"
             >
-              <X size={28} />
+              QUIT GAME
             </button>
           </header>
 
           {/* Grid */}
           <div className="flex-1 overflow-y-auto p-4 pb-32">
-            <div className={`grid gap-4 ${players.length > 5 ? 'grid-cols-2' : 'grid-cols-1 max-w-md mx-auto'}`}>
+            <div className={`grid gap-6 ${players.length > 5 ? 'grid-cols-2' : 'grid-cols-1 max-w-md mx-auto'}`}>
               {players.map(player => (
                 <PlayerCard
                   key={player.id}
@@ -363,29 +375,26 @@ export default function App() {
 
       {/* Quit Confirmation Modal */}
       {showQuitConfirm && (
-        <Modal isOpen={true}>
-          <div className="text-center space-y-6">
-            <div className="inline-block p-4 rounded-full bg-red-900/30 text-red-500 mb-2">
-              <AlertCircle size={40} />
-            </div>
-
+        <Modal isOpen={true} title="CONFIRM EXIT">
+          <div className="flex flex-col items-center gap-4">
+            <AlertCircle size={48} className="text-yellow-600" />
             <div className="space-y-2">
-              <h2 className="text-2xl font-black text-white uppercase">End Game?</h2>
-              <p className="text-zinc-400 text-sm font-medium uppercase">Current progress will be lost.</p>
+              <h2 className="text-xl font-bold uppercase">Exit Game?</h2>
+              <p className="text-sm font-mono">Unsaved progress will be lost.</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <button
-                onClick={() => setShowQuitConfirm(false)}
-                className="py-3 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition-colors text-sm font-bold uppercase tracking-wide text-white"
-              >
-                Cancel
-              </button>
+            <div className="flex gap-4 pt-2 w-full justify-center">
               <button
                 onClick={confirmQuit}
-                className="py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 transition-colors text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-red-900/20"
+                className="px-6 py-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black active:border-inset font-bold"
               >
-                End Game
+                YES
+              </button>
+              <button
+                onClick={() => setShowQuitConfirm(false)}
+                className="px-6 py-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black active:border-inset font-bold"
+              >
+                NO
               </button>
             </div>
           </div>
@@ -394,34 +403,29 @@ export default function App() {
 
       {/* Game Over View */}
       {gameState === "gameover" && winner && (
-        <Modal isOpen={true}>
-          <div className="text-center space-y-8">
-            <div className="inline-block p-6 rounded-full bg-red-600 text-white mb-2 shadow-[0_0_50px_rgba(220,38,38,0.6)] animate-bounce">
-              <Trophy size={64} />
+        <Modal isOpen={true} title="GAME OVER">
+          <div className="space-y-6">
+            <div className="border-2 border-inset border-gray-400 bg-white p-4">
+              <Trophy size={48} className="mx-auto text-yellow-500 mb-2" />
+              <h2 className="text-sm font-bold uppercase text-gray-500 mb-1">WINNER</h2>
+              <h1 className="text-3xl font-black uppercase text-black border-b-2 border-black pb-2">{winner.name}</h1>
+              <div className="mt-4 text-xs font-mono">
+                ALL OTHERS ARE <span className="text-red-600 font-bold text-lg">MENTIROSOS</span>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <h2 className="text-zinc-500 text-sm font-bold uppercase tracking-[0.2em]">Survivor</h2>
-              <h1 className="text-5xl font-black text-white uppercase">{winner.name}</h1>
-            </div>
-
-            <div className="p-6 bg-zinc-900 rounded-2xl border border-zinc-800 text-sm text-zinc-400">
-              <p>Everyone else is a</p>
-              <p className="text-red-600 font-black text-3xl mt-2 tracking-widest animate-pulse">MENTIROSO</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 pt-4">
+            <div className="flex gap-2 justify-center">
               <button
                 onClick={resetGame}
-                className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl bg-zinc-800 border-2 border-transparent hover:border-zinc-600 transition-colors text-sm font-bold uppercase tracking-wide"
+                className="flex-1 py-2 px-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black active:border-inset font-bold text-sm"
               >
-                <RotateCcw size={18} /> Lobby
+                NEW GAME
               </button>
               <button
                 onClick={playAgain}
-                className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl bg-white text-black hover:bg-gray-200 transition-colors text-sm font-black uppercase tracking-wide shadow-lg"
+                className="flex-1 py-2 px-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black active:border-inset font-bold text-sm"
               >
-                <Undo2 size={18} /> Play Again
+                REPLAY
               </button>
             </div>
           </div>
