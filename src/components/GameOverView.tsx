@@ -1,4 +1,4 @@
-import { Trophy } from "lucide-react"
+import { Trophy, RotateCcw, PlayCircle } from "lucide-react"
 import type { Player } from "../types"
 import Modal from "./Modal"
 
@@ -10,29 +10,38 @@ interface GameOverViewProps {
 
 export default function GameOverView({ winner, onReset, onPlayAgain }: GameOverViewProps) {
     return (
-        <Modal isOpen={true} title="GAME OVER">
-            <div className="space-y-6">
-                <div className="border-2 border-inset border-gray-400 bg-white p-4">
-                    <Trophy size={48} className="mx-auto text-yellow-500 mb-2" />
-                    <h2 className="text-sm font-bold uppercase text-gray-500 mb-1">WINNER</h2>
-                    <h1 className="text-3xl font-black uppercase text-black border-b-2 border-black pb-2">{winner.name}</h1>
-                    <div className="mt-4 text-xs font-mono">
-                        ALL OTHERS ARE <span className="text-red-600 font-bold text-lg">MENTIROSOS</span>
-                    </div>
+        <Modal isOpen={true} title="MATCH FINISHED">
+            <div className="flex flex-col items-center gap-8 py-4">
+                <div className="relative">
+                    <div className="absolute inset-0 bg-yellow-500/20 blur-2xl rounded-full" />
+                    <Trophy size={80} className="relative text-yellow-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.5)] animate-float" />
                 </div>
 
-                <div className="flex gap-2 justify-center">
+                <div className="text-center space-y-2">
+                    <h2 className="text-indigo-400 font-bold text-xs uppercase tracking-widest">Grand Champion</h2>
+                    <h1 className="text-4xl font-black text-white tracking-tight">{winner.name}</h1>
+                </div>
+
+                <div className="w-full bg-slate-900/60 border border-white/5 rounded-2xl p-6 text-center">
+                    <p className="text-slate-400 text-sm italic">
+                        "The truth always prevails, but the best liar wins the game."
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 w-full pt-4">
                     <button
                         onClick={onReset}
-                        className="flex-1 py-2 px-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black active:border-inset font-bold text-sm"
+                        className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl modern-input font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
                     >
-                        NEW GAME
+                        <RotateCcw size={18} />
+                        New Game
                     </button>
                     <button
                         onClick={onPlayAgain}
-                        className="flex-1 py-2 px-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black active:border-inset font-bold text-sm"
+                        className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl modern-button font-black text-xs uppercase tracking-widest shadow-xl"
                     >
-                        REPLAY
+                        <PlayCircle size={18} />
+                        Replay
                     </button>
                 </div>
             </div>

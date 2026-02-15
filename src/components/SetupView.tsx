@@ -1,6 +1,6 @@
 import { useState } from "react"
 import type { Player } from "../types"
-import UserPlusIcon from "./UserPlusIcon"
+import { Users, UserPlus, X, Play } from "lucide-react"
 
 interface SetupViewProps {
     players: Player[]
@@ -14,83 +14,102 @@ export default function SetupView({ players, addPlayer, removePlayer, startGame 
 
     const handleAddPlayer = (e: React.FormEvent) => {
         e.preventDefault()
+        if (!newPlayerName.trim()) return
         addPlayer(newPlayerName)
         setNewPlayerName("")
     }
 
     return (
-        <div className="flex flex-col h-full items-center justify-center p-6 max-w-lg mx-auto">
-            <div className="w-full bg-[#c0c0c0] border-[3px] border-t-white border-l-white border-b-black border-r-black shadow-[8px_8px_0_#000] p-1">
-                {/* Title Bar */}
-                <div className="bg-[#000080] px-2 py-1 mb-4 flex justify-between items-center">
-                    <span className="font-bold text-white tracking-widest">MENTIROSO.EXE - SETUP</span>
-                    <div className="w-4 h-4 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black"></div>
+        <div className="relative z-10 flex flex-col min-h-screen items-center justify-center p-6 max-w-2xl mx-auto">
+            <div className="w-full glass-card rounded-3xl p-8 md:p-12 overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+                    <Users size={120} />
                 </div>
 
-                <div className="p-4 flex flex-col gap-6">
-                    <header className="text-center border-b-2 border-black pb-4">
-                        <h1 className="text-4xl font-bold tracking-tighter text-black retro-text-shadow mb-2">
-                            MENTIROSO
-                        </h1>
-                        <p className="text-sm font-bold bg-yellow-200 inline-block px-2 border border-black rotate-1">
-                            THE ULTIMATE DICE GAME
+                <header className="mb-10 relative">
+                    <h1 className="text-5xl md:text-6xl font-black tracking-tight text-white mb-3">
+                        MENTIROSO
+                    </h1>
+                    <div className="flex items-center gap-3">
+                        <span className="h-px w-12 bg-indigo-500"></span>
+                        <p className="text-indigo-400 font-medium tracking-widest uppercase text-sm">
+                            Scoreboard Elite
                         </p>
-                    </header>
-
-                    {/* Player List */}
-                    <div className="h-64 overflow-y-auto border-2 border-inset border-gray-500 bg-white p-2">
-                        {players.length === 0 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-gray-400">
-                                <UserPlusIcon className="w-8 h-8 mb-2" />
-                                <p className="font-bold">WAITING FOR PLAYERS...</p>
-                            </div>
-                        ) : (
-                            <ul className="space-y-1">
-                                {players.map((p) => (
-                                    <li key={p.id} className="flex items-center justify-between px-2 py-1 hover:bg-[#000080] hover:text-white group cursor-default">
-                                        <span className="font-mono font-bold text-lg">› {p.name}</span>
-                                        <button
-                                            onClick={() => removePlayer(p.id)}
-                                            className="text-red-600 font-bold group-hover:text-white px-2"
-                                        >
-                                            [DEL]
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
                     </div>
+                </header>
 
-                    {/* Input Form */}
-                    <form onSubmit={handleAddPlayer} className="flex gap-2">
+                <div className="space-y-8 relative">
+                    {/* Add Player Input */}
+                    <form onSubmit={handleAddPlayer} className="relative group">
                         <input
                             type="text"
                             autoFocus
                             value={newPlayerName}
                             onChange={(e) => setNewPlayerName(e.target.value)}
-                            placeholder="ENTER NAME..."
-                            className="flex-1 bg-white border-2 border-inset border-gray-500 px-2 py-2 text-lg font-mono outline-none focus:bg-yellow-100"
+                            placeholder="Add player name..."
+                            className="w-full modern-input rounded-2xl py-4 pl-6 pr-16 text-xl"
                         />
                         <button
                             type="submit"
                             disabled={!newPlayerName.trim()}
-                            className="bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black px-4 active:border-inset disabled:opacity-50 font-bold"
+                            className="absolute right-2 top-2 bottom-2 px-4 rounded-xl modern-button disabled:opacity-0 disabled:scale-95 transition-all"
                         >
-                            ADD
+                            <UserPlus size={24} />
                         </button>
                     </form>
 
-                    <div className="border-t-2 border-gray-400 pt-4">
-                        <button
-                            onClick={startGame}
-                            disabled={players.length < 2}
-                            className="w-full py-3 bg-[#c0c0c0] border-[3px] border-t-white border-l-white border-b-black border-r-black text-black font-black text-xl hover:bg-[#d0d0d0] active:border-t-black active:border-l-black active:border-b-white active:border-r-white disabled:opacity-50 disabled:cursor-not-allowed uppercase"
-                        >
-                            START GAME
-                        </button>
+                    {/* Players List */}
+                    <div className="space-y-3">
+                        <div className="flex justify-between items-center px-2">
+                            <h3 className="text-slate-400 font-bold text-sm uppercase tracking-wider">
+                                Players ({players.length})
+                            </h3>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                            {players.length === 0 ? (
+                                <div className="col-span-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-slate-700 rounded-2xl text-slate-500">
+                                    <Users className="mb-3 opacity-20" size={40} />
+                                    <p className="font-medium italic">Empty lobby...</p>
+                                </div>
+                            ) : (
+                                players.map((p) => (
+                                    <div
+                                        key={p.id}
+                                        className="flex items-center justify-between bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 transition-all hover:bg-slate-700/50 group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
+                                            <span className="font-bold text-lg truncate max-w-[150px]">{p.name}</span>
+                                        </div>
+                                        <button
+                                            onClick={() => removePlayer(p.id)}
+                                            className="text-slate-500 hover:text-red-400 p-1 rounded-lg transition-colors"
+                                        >
+                                            <X size={20} />
+                                        </button>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
+
+                    {/* Start Button */}
+                    <button
+                        onClick={startGame}
+                        disabled={players.length < 2}
+                        className="w-full py-5 rounded-2xl modern-button text-white font-black text-xl flex items-center justify-center gap-3 disabled:opacity-30 disabled:grayscale transition-all"
+                    >
+                        <Play fill="currentColor" size={24} />
+                        START MATCH
+                    </button>
                 </div>
             </div>
+
+            <p className="mt-8 text-slate-500 font-medium text-sm">
+                Built for the ultimate dice challenge
+            </p>
         </div>
     )
 }
+

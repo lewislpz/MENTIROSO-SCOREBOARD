@@ -1,5 +1,6 @@
 import type { Player } from "../types"
 import { TARGET_LETTERS } from "../constants/game"
+import { Undo2, Skull } from "lucide-react"
 
 interface PlayerCardProps {
     player: Player
@@ -18,46 +19,44 @@ export default function PlayerCard({
         <div
             onClick={isOut ? undefined : onTap}
             className={`
-        relative group border-[3px] p-2 h-36 flex flex-col justify-between cursor-pointer select-none transition-transform active:translate-y-1
-        ${isOut
-                    ? "bg-[#808080] border-t-gray-600 border-l-gray-600 border-b-white border-r-white grayscale text-gray-400"
-                    : "bg-white border-t-white border-l-white border-b-black border-r-black hover:bg-[#eaeaea]"
+                relative group glass-card rounded-2xl p-6 transition-all duration-300
+                ${isOut
+                    ? "opacity-50 grayscale scale-[0.98] cursor-not-allowed"
+                    : "hover:bg-white/5 cursor-pointer active:scale-95"
                 }
-        shadow-[4px_4px_0_#000]
-      `}
+            `}
         >
             {/* Header: Name + Undo */}
-            <div className="flex justify-between items-start border-b-2 border-black pb-1 mb-1">
-                <h3 className={`font-bold text-lg leading-none truncate pr-1 ${isOut ? "line-through decoration-2" : "text-black"}`}>
-                    {player.name}
-                </h3>
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                    <div className={`w-3 h-3 rounded-full ${isOut ? 'bg-slate-600' : 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]'}`}></div>
+                    <h3 className={`font-black text-xl tracking-tight truncate max-w-[120px] ${isOut ? "text-slate-500 line-through" : "text-white"}`}>
+                        {player.name}
+                    </h3>
+                </div>
 
                 {player.strikes > 0 && !isOut && (
                     <button
                         onClick={onUndo}
-                        className="px-2 py-0 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black text-black active:border-inset hover:bg-gray-300"
-                        title="Undo"
+                        className="p-2 hover:bg-white/10 text-indigo-400 rounded-lg transition-all active:scale-90"
+                        title="Undo strike"
                     >
-                        ←
+                        <Undo2 size={18} />
                     </button>
                 )}
             </div>
 
-            {/* Letters Display */}
-            <div className="flex justify-center items-end gap-0 mt-10">
+            {/* Scoreboard Letters */}
+            <div className="flex justify-between items-end bg-black/20 rounded-xl p-4 border border-white/5 mt-4">
                 {TARGET_LETTERS.map((char, index) => {
                     const isActive = index < player.strikes
                     return (
                         <div
                             key={index}
                             className={`
-                 font-mono font-bold text-1xl
-                 w-5 text-center
-                 ${isActive
-                                    ? "text-red-600 border-b-4 border-red-600"
-                                    : "text-gray-300 border-b-4 border-transparent"
-                                }
-              `}
+                                letter-strike font-black text-lg sm:text-xl
+                                ${isActive ? "active text-red-500" : "text-slate-600"}
+                            `}
                         >
                             {char}
                         </div>
@@ -67,9 +66,10 @@ export default function PlayerCard({
 
             {/* Visual Indicator for "OUT" */}
             {isOut && (
-                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                    <div className="bg-red-700 text-white font-bold text-3xl px-4 py-2 border-4 border-white transform -rotate-12 shadow-[4px_4px_0_#000]">
-                        OUT
+                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none rounded-2xl overflow-hidden">
+                    <div className="bg-red-500/10 backdrop-blur-[2px] w-full h-full flex flex-col items-center justify-center gap-2">
+                        <Skull className="text-red-500 animate-pulse" size={48} />
+                        <span className="text-red-500 font-black text-2xl tracking-[0.2em] bg-black/40 px-4 py-1 rounded-lg">ELIMINATED</span>
                     </div>
                 </div>
             )}

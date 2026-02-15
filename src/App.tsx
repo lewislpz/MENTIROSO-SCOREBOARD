@@ -47,9 +47,11 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen bg-[#008080] text-black select-none overflow-hidden relative font-mono pt-12 sm:pt-0"
+      className="min-h-screen text-white select-none overflow-hidden relative"
       style={{ minHeight: "100dvh" }}
     >
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.15)_0%,transparent_50%)] pointer-events-none" />
+
       {/* Setup View */}
       {gameState === "setup" && (
         <SetupView
@@ -72,31 +74,39 @@ export default function App() {
 
       {/* Quit Confirmation Modal */}
       {showQuitConfirm && (
-        <Modal isOpen={true} title="CONFIRM EXIT">
-          <div className="flex flex-col items-center gap-4">
-            <AlertCircle size={48} className="text-yellow-600" />
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold uppercase">Exit Game?</h2>
-              <p className="text-sm font-mono">Unsaved progress will be lost.</p>
+        <Modal
+          isOpen={true}
+          title="CONFIRM EXIT"
+          onClose={() => setShowQuitConfirm(false)}
+        >
+          <div className="flex flex-col items-center gap-6">
+            <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center border border-red-500/30">
+              <AlertCircle size={32} className="text-red-400" />
             </div>
 
-            <div className="flex gap-4 pt-2 w-full justify-center">
-              <button
-                onClick={confirmQuit}
-                className="px-6 py-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black active:border-inset font-bold"
-              >
-                YES
-              </button>
+            <div className="space-y-2 text-center">
+              <h2 className="text-2xl font-black text-white tracking-tight">End Match?</h2>
+              <p className="text-slate-400 font-medium">Progress for this session will be lost.</p>
+            </div>
+
+            <div className="flex gap-3 w-full pt-4">
               <button
                 onClick={() => setShowQuitConfirm(false)}
-                className="px-6 py-2 bg-[#c0c0c0] border-2 border-t-white border-l-white border-b-black border-r-black active:border-inset font-bold"
+                className="flex-1 py-3 px-4 rounded-xl modern-input font-bold hover:bg-white/10 transition-all border-white/10"
               >
-                NO
+                STAY
+              </button>
+              <button
+                onClick={confirmQuit}
+                className="flex-1 py-3 px-4 rounded-xl modern-button bg-red-500 hover:bg-red-600 font-bold transition-all shadow-lg"
+              >
+                QUIT
               </button>
             </div>
           </div>
         </Modal>
       )}
+
 
       {/* Game Over View */}
       {gameState === "gameover" && winner && (
