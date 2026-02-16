@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Skull } from "lucide-react"
 
 // Hooks
 import { useGameLogic } from "./hooks/useGameLogic"
 
 // Components
+import ParticleBackground from "./components/ParticleBackground"
 import Modal from "./components/Modal"
 import SetupView from "./components/SetupView"
 import GameView from "./components/GameView"
@@ -26,7 +27,7 @@ export default function App() {
 
   const [showQuitConfirm, setShowQuitConfirm] = useState(false)
 
-  // Check viewport height for mobile browser bar issues
+  // Viewport height fix for mobile browsers
   useEffect(() => {
     const setVh = () => {
       document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`)
@@ -50,7 +51,8 @@ export default function App() {
       className="min-h-screen text-white select-none overflow-hidden relative"
       style={{ minHeight: "100dvh" }}
     >
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.15)_0%,transparent_50%)] pointer-events-none" />
+      {/* Animated background */}
+      <ParticleBackground />
 
       {/* Setup View */}
       {gameState === "setup" && (
@@ -76,37 +78,52 @@ export default function App() {
       {showQuitConfirm && (
         <Modal
           isOpen={true}
-          title="CONFIRM EXIT"
+          title="CONFIRMAR SALIDA"
           onClose={() => setShowQuitConfirm(false)}
         >
           <div className="flex flex-col items-center gap-6">
-            <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center border border-red-500/30">
-              <AlertCircle size={32} className="text-red-400" />
+            <div className="relative">
+              <div className="w-16 h-16 bg-red-500/15 rounded-2xl flex items-center justify-center border border-red-500/20">
+                <Skull size={32} className="text-red-400" />
+              </div>
+              <div className="absolute inset-0 bg-red-500/10 blur-xl rounded-full" />
             </div>
 
             <div className="space-y-2 text-center">
-              <h2 className="text-2xl font-black text-white tracking-tight">End Match?</h2>
-              <p className="text-slate-400 font-medium">Progress for this session will be lost.</p>
+              <h2 className="text-2xl font-black text-white tracking-tight"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                ¿Salir?
+              </h2>
+              <p className="text-purple-300/50 font-medium text-sm">
+                El progreso de esta partida se perderá.
+              </p>
             </div>
 
-            <div className="flex gap-3 w-full pt-4">
+            <div className="flex gap-3 w-full pt-2">
               <button
                 onClick={() => setShowQuitConfirm(false)}
-                className="flex-1 py-3 px-4 rounded-xl modern-input font-bold hover:bg-white/10 transition-all border-white/10"
+                className="flex-1 py-3.5 px-4 rounded-xl ghost-button text-xs uppercase tracking-wider font-bold transition-all"
               >
-                STAY
+                Quedarme
               </button>
               <button
                 onClick={confirmQuit}
-                className="flex-1 py-3 px-4 rounded-xl modern-button bg-red-500 hover:bg-red-600 font-bold transition-all shadow-lg"
+                className="flex-1 py-3.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  background: "linear-gradient(135deg, #ef4444, #dc2626)",
+                  color: "white",
+                  boxShadow: "0 0 20px rgba(239,68,68,0.3)",
+                  letterSpacing: "0.1em",
+                }}
               >
-                QUIT
+                Salir
               </button>
             </div>
           </div>
         </Modal>
       )}
-
 
       {/* Game Over View */}
       {gameState === "gameover" && winner && (
