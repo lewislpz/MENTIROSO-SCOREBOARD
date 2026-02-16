@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { AlertCircle, Skull } from "lucide-react"
+import { Skull } from "lucide-react"
 
 // Hooks
 import { useGameLogic } from "./hooks/useGameLogic"
